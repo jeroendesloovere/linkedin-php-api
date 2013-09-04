@@ -16,3 +16,7 @@ This LinkedIn PHP API wrapper connects to the offical LinkedIn API.
 * Job posting - [Jobs Posting API](http://developer.linkedin.com/documents/job-posting-api-first-steps)
 * Shares - [Share API](http://developer.linkedin.com/documents/share-api)
 * Analytics - [Company Statistics API](https://developer.linkedin.com/documents/company-statistics)
+
+## Testing OAuth tool
+
+[Testing OAuth credentials](https://developer.linkedin.com/oauth-test-console)
