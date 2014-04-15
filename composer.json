@@ -1,0 +1,22 @@
+{
+    "name": "jeroendesloovere/linkedin-php-api",
+    "type": "library",
+    "description": "This LinkedIn PHP class connects with the LinkedIn API.",
+    "keywords": ["linkedin", "api", "php", "social"],
+    "homepage": "https://github.com/jeroendesloovere/linkedin-php-api",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeroen Desloovere",
+            "email": "info@jeroendesloovere.be",
+            "homepage": "http://jeroendesloovere.be",
+			"role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "autoload": {
+        "psr-4": { "JeroenDesloovere\\LinkedIn\\": "src/" }
+    }
+}
