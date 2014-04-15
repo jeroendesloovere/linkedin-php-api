@@ -1,10 +1,13 @@
 <?php
 
+namespace JeroenDesloovere\LinkedIn;
+
 /**
  * LinkedIn API
  *
- * @author Jeroen Desloovere <jeroen@siesqo.be>
- * @version 0.0.1
+ * This LinkedIn API PHP Wrapper class connects to the LinkedIn API.
+ *
+ * @author Jeroen Desloovere <info@jeroendesloovere.be>
  */
 class LinkedIn
 {
@@ -22,43 +25,27 @@ class LinkedIn
 	 *
 	 * @var string
 	 */
-	private $consumerKey;
+	private $appKey;
 
 	/**
 	 * Consumer secret
 	 *
 	 * @var string
 	 */
-	private $consumerSecret;
-
-	/**
-	 * Token
-	 *
-	 * @var string
-	 */
-	private $token;
-
-	/**
-	 * Token secret
-	 *
-	 * @var string
-	 */
-	private $tokenSecret;
+	private $appSecret;
 
 	/**
 	 * Construct
 	 *
-	 * @param string $consumerKey
-	 * @param string $consumerSecret
+	 * @param string $appKey
+	 * @param string $appSecret
 	 * @param string $token
 	 * @param string $tokenSecret
 	 */
-	public function __construct($consumerKey, $consumerSecret, $token, $tokenSecret)
+	public function __construct($appKey, $appSecret)
 	{
-		$this->consumerKey = (string) $consumerKey;
-		$this->consumerSecret = (string) $consumerSecret;
-		$this->token = (string) $token;
-		$this->tokenSecret = (string) $tokenSecret;
+		$this->appKey = (string) $appKey;
+		$this->appSecret = (string) $appSecret;
 	}
 
 	/**
@@ -82,7 +69,7 @@ class LinkedIn
 		$token = new OAuthToken($this->token, $this->tokenSecret);
 
 		// consumer object built using the OAuth library
-		$consumer = new OAuthConsumer($this->consumerKey, $this->consumerSecret);
+		$consumer = new OAuthConsumer($this->appKey, $this->appSecret);
 
 		// Yelp uses HMAC SHA1 encoding
 		$signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
