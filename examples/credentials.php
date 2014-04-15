@@ -3,6 +3,7 @@
 // define own LinkedIn credentials
 $appKey = ''; // required
 $appSecret = ''; // required
+$oAuthAccessToken = ''; // required
 
 // username and password are required
 if (empty($appKey) || empty($appSecret)) {

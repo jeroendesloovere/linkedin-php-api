@@ -11,100 +11,105 @@ namespace JeroenDesloovere\LinkedIn;
  */
 class LinkedIn
 {
-	// API url
-	const API_URL = 'http://api.linkedin.com/';
+    // API url
+    const API_URL = 'https://api.linkedin.com/';
 
-	// API version
-	const API_VERSION = 'v1';
+    // API version
+    const API_VERSION = 'v1';
 
     // current version
     const VERSION = '0.0.1';
 
-	/**
-	 * Consumer key
-	 *
-	 * @var string
-	 */
-	private $appKey;
+    /**
+     * App key
+     *
+     * @var string
+     */
+    private $appKey;
 
-	/**
-	 * Consumer secret
-	 *
-	 * @var string
-	 */
-	private $appSecret;
+    /**
+     * App secret
+     *
+     * @var string
+     */
+    private $appSecret;
 
-	/**
-	 * Construct
-	 *
-	 * @param string $appKey
-	 * @param string $appSecret
-	 * @param string $token
-	 * @param string $tokenSecret
-	 */
-	public function __construct($appKey, $appSecret)
-	{
-		$this->appKey = (string) $appKey;
-		$this->appSecret = (string) $appSecret;
-	}
+    /**
+     * OAuth acces token
+     *
+     * @var string
+     */
+    private $oAuthAccessToken;
 
-	/**
-	 * Do call
-	 *
-	 * @param string $url The URL to call.
-	 * @param array[optional] $data The data to pass.
-	 */
-	protected function doCall($url, $data = null)
-	{
-		// enter the path that the oauth library is in relation to the php file
-		require_once('oauth.php');
+    /**
+     * Construct
+     *
+     * @param string $appKey
+     * @param string $appSecret
+     * @param string $oAuthAccessToken
+     * @param string $tokenSecret
+     */
+    public function __construct($appKey, $appSecret, $oAuthAccessToken)
+    {
+        $this->appKey = (string) $appKey;
+        $this->appSecret = (string) $appSecret;
+        $this->oAuthAccessToken = (string) $oAuthAccessToken;
+    }
 
-		// define unsigned url
-		$unsignedUrl = API_URL . API_VERSION . '/' . $url;
+    /**
+     * Do call
+     *
+     * @param string $url The URL to call.
+     * @param array[optional] $data The data to pass.
+     */
+    protected function doCall($url, $data = null)
+    {
+        // define unsigned url
+        $unsignedUrl = self::API_URL . self::API_VERSION . '/' . $url;
 
-		// if data is set, add to url
-		if(!empty($data)) $unsignedUrl .= '?' . http_build_query($data);
+        // define oauth2 access token
+        $data['oauth2_access_token'] = $this->oAuthAccessToken;
 
-		// token object built using the OAuth library
-		$token = new OAuthToken($this->token, $this->tokenSecret);
+        // if data is set, add to url
+        if(!empty($data)) $unsignedUrl .= '?' . http_build_query($data);
 
-		// consumer object built using the OAuth library
-		$consumer = new OAuthConsumer($this->appKey, $this->appSecret);
+        // get the signed URL
+        $signedUrl = $unsignedUrl;
 
-		// Yelp uses HMAC SHA1 encoding
-		$signatureMethod = new OAuthSignatureMethod_HMAC_SHA1();
+        // send LinkedIn API Call
+        $curl = curl_init($signedUrl);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_HEADER, 0);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_VERBOSE, false);
+        curl_setopt($curl, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, array(
+            'Content-Type: application/json; charset=UTF-8'
+        ));
 
-		// build OAuth Request using the OAuth PHP library. Uses the consumer and token object created above.
-		$oauthRequest = OAuthRequest::from_consumer_and_token($consumer, $token, 'GET', $unsignedUrl);
+        // LinkedIn response
+        $result = curl_exec($curl); 
 
-		// sign the request
-		$oauthRequest->sign_request($signatureMethod, $consumer, $token);
+        // close connection
+        curl_close($curl);
 
-		// get the signed URL
-		$signedUrl = $oauthRequest->to_url();
+        // handle LinkedIn response data
+        return(json_decode($result));
+    }
 
-		// send Yelp API Call
-		$ch = curl_init($signedUrl);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HEADER, 0);
-
-		// Yelp response
-		$data = curl_exec($ch); 
-
-		// close connection
-		curl_close($ch);
-
-		// handle Yelp response data
-		return(json_decode($data));
-	}
+    /**
+     * Get profile
+     */
+    public function getProfile()
+    {
+        return $this->doCall('people/~');
+    }
 }
 
 
 /**
  * LinkedIn API Exception
  *
- * @author Jeroen Desloovere <jeroen@siesqo.be>
+ * @author Jeroen Desloovere <info@jeroendesloovere.be>
  */
-class LinkedInException extends Exception
-{
-}
+class LinkedInException extends \Exception {}

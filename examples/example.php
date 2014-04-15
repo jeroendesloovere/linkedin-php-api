@@ -14,12 +14,13 @@ require_once __DIR__ . '/credentials.php';
 // required to load
 require_once __DIR__ . '/../src/LinkedIn.php';
 
-// define api
-$api = new LinkedIn($appKey, $appSecret);
+use JeroenDesloovere\LinkedIn\LinkedIn;
 
-// do query
-// @todo
-$results = array();
+// define api
+$api = new LinkedIn($appKey, $appSecret, $oAuthAccessToken);
+
+// get profile
+$results = $api->getProfile();
 
 // show results
 print_r($results);
