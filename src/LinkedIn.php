@@ -106,7 +106,6 @@ class LinkedIn
     }
 }
 
-
 /**
  * LinkedIn API Exception
  *
